@@ -1,4 +1,4 @@
-import { Search, Loader2 } from "lucide-react";
+// import { Search, Loader2 } from "lucide-react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
