@@ -1,4 +1,4 @@
-// pages/ProductsPage.tsx
+
 import { useProducts } from "../hooks/useProducts";
 import { usePrefetchPagination } from "../hooks/usePrefetchPagination";
 import { useUrlParams } from "../hooks/useUrlParams";

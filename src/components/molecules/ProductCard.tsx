@@ -1,4 +1,4 @@
-// components/molecules/ProductCard.tsx
+
 import Card from "../atoms/Card/Card";
 import CardImage from "../atoms/CardImage/CardImage";
 import FlexContainer from "../atoms/containers/FlexContainer";

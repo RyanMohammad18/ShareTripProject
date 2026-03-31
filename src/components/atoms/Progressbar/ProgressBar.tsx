@@ -1,4 +1,4 @@
-// components/atoms/ProgressBar/ProgressBar.tsx
+
 import type { HTMLAttributes } from 'react';
 import { colors, type ColorKey } from '../../../constants/colors';
 

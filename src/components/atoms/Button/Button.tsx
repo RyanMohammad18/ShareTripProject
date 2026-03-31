@@ -1,4 +1,4 @@
-// components/atoms/Button/Button.tsx
+
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link';

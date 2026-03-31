@@ -1,4 +1,3 @@
-// lib/toastStore.ts
 import { useSyncExternalStore, useCallback } from 'react';
 
 export interface ToastData {
@@ -39,7 +38,6 @@ export const toastStore = {
   },
 };
 
-// Hook — just reads from the store, no useEffect
 export function useToast() {
   const current = useSyncExternalStore(toastStore.subscribe, toastStore.getSnapshot);
 

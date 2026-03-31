@@ -1,4 +1,3 @@
-// components/atoms/Typography/Text.tsx
 import type { HTMLAttributes, ReactNode } from 'react';
 import { colors, type ColorKey } from '../../../constants/colors';
 

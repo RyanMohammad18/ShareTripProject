@@ -85,10 +85,9 @@ function App() {
     //   </main>
     // </div>
     <BrowserRouter>
-
-    <QueryClientProvider client={queryClient}>
-      <ProductsPage />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ProductsPage />
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }

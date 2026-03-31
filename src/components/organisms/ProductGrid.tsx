@@ -1,4 +1,4 @@
-// components/organisms/ProductGrid.tsx
+
 import ProductCard from '../molecules/ProductCard';
 import GridContainer from '../atoms/containers/GridContainer';
 import type { Product } from '../../types/product';

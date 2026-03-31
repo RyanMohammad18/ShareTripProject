@@ -1,4 +1,4 @@
-// components/atoms/containers/GridContainer.tsx
+
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface GridContainerProps extends HTMLAttributes<HTMLDivElement> {

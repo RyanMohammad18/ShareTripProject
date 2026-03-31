@@ -1,4 +1,4 @@
-// components/atoms/Layout/Section.tsx
+
 import type { HTMLAttributes, ReactNode } from 'react';
 
 type SectionTag = 'main' | 'section' | 'header' | 'footer' | 'aside';

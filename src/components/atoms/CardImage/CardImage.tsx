@@ -1,4 +1,4 @@
-// components/atoms/CardImage/CardImage.tsx
+
 import type { ImgHTMLAttributes } from 'react';
 
 interface CardImageProps extends ImgHTMLAttributes<HTMLImageElement> {

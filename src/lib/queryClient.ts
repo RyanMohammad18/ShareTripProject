@@ -1,4 +1,4 @@
-// lib/queryClient.ts
+
 import { QueryClient } from '@tanstack/react-query';
 import { setupQueryPersister } from './queryPersister';
 import { toastStore } from './toastStore';
@@ -15,15 +15,13 @@ export const queryClient = new QueryClient({
   },
 });
 
-// Global error handler — catches ALL query failures, shows toast
-// No useEffect, no component-level error handling needed
 queryClient.getQueryCache().subscribe((event) => {
   if (event.type !== 'updated' || event.action.type !== 'error') return;
 
   const error = event.action.error as Error;
   const appError = normalizeError(error);
 
-  // Abort → null → no toast
+
   if (!appError) return;
 
   toastStore.add({
@@ -33,5 +31,4 @@ queryClient.getQueryCache().subscribe((event) => {
   });
 });
 
-// Persistence
 setupQueryPersister(queryClient, 'products');

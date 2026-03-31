@@ -1,4 +1,4 @@
-// components/atoms/Toast/Toast.tsx
+
 import { useEffect } from "react";
 import { colors, type ColorKey } from "../../../constants/colors";
 import FlexContainer from "../containers/FlexContainer";

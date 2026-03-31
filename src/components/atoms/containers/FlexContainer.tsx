@@ -1,4 +1,4 @@
-// components/atoms/containers/FlexContainer.tsx
+
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface FlexContainerProps extends HTMLAttributes<HTMLDivElement> {

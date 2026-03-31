@@ -1,4 +1,3 @@
-// components/molecules/EmptyMessage.tsx
 import FlexContainer from '../atoms/containers/FlexContainer';
 import Text from '../atoms/Typography/Text';
 

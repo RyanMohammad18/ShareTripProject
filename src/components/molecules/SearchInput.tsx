@@ -1,4 +1,3 @@
-// components/molecules/SearchInput.tsx
 import { Search } from 'lucide-react';
 import { Input } from '../atoms/Input/Input';
 import FlexContainer from '../atoms/containers/FlexContainer';

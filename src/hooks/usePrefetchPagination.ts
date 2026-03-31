@@ -1,4 +1,4 @@
-// hooks/usePrefetchPagination.ts
+
 import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -19,11 +19,6 @@ export function usePrefetchPagination<TParams>({
 }: UsePrefetchPaginationOptions<TParams>) {
   const queryClient = useQueryClient();
 
-  /**
-   * Single function — handles everything:
-   * - Hover on page 5 button  → prefetchPage(5)       → prefetches page 5
-   * - Click on page 3 button  → prefetchPage(3, true)  → prefetches page 3 + page 4
-   */
   const prefetchPage = useCallback(
     (targetPage: number, prefetchNext = false) => {
       const prefetchSingle = (pg: number) => {
@@ -42,10 +37,9 @@ export function usePrefetchPagination<TParams>({
         });
       };
 
-      // Always prefetch the target page
+
       prefetchSingle(targetPage);
 
-      // On click — also prefetch the page after destination
       if (prefetchNext) {
         prefetchSingle(targetPage + 1);
       }

@@ -1,4 +1,4 @@
-// components/atoms/Layout/PageWrapper.tsx
+
 import type { HTMLAttributes, ReactNode } from 'react';
 
 interface PageWrapperProps extends HTMLAttributes<HTMLDivElement> {
