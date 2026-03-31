@@ -1,9 +1,12 @@
 // pages/ProductsPage.tsx
-import { useState } from "react";
 import { useProducts } from "../hooks/useProducts";
-import Title from "../components/atoms/Typography/Title";
-import { ErrorMessage } from "../components/molecules/ErrorMessage";
+import { usePrefetchPagination } from "../hooks/usePrefetchPagination";
+import { useUrlParams } from "../hooks/useUrlParams";
+import { fetchProductsWithRetry } from "../api/resilientClient";
+import { useToast } from "../lib/toastStore";
+
 import { EmptyMessage } from "../components/molecules/EmptyMessage";
+import ToastContainer from "../components/molecules/ToastContainer";
 
 import {
   ToolbarSkeleton,
@@ -14,116 +17,96 @@ import {
 import ProductToolbar from "../components/organisms/ProductToolbar";
 import ProductGrid from "../components/organisms/ProductGrid";
 import { Pagination } from "../components/organisms/Pagination";
+import PageWrapper from "../components/atoms/PageWrapper/PageWrapper";
+import Container from "../components/atoms/containers/Container";
+import PageHeader from "../components/molecules/PageHeader";
+import Section from "../components/atoms/section/Section";
+import ProgressBar from "../components/atoms/Progressbar/ProgressBar";
+
+const LIMIT = 12;
 
 const ProductsPage = () => {
-  const [page, setPage] = useState(1);
-  const [limit] = useState(12);
-  const [category, setCategory] = useState("");
-  const [search, setSearch] = useState("");
+  const [urlParams, setUrlParams] = useUrlParams({
+    page: "number",
+    category: "string",
+    search: "string",
+  });
 
-  const query = useProducts({ page, limit, category, search });
+  const page = urlParams.page || 1;
+  const category = urlParams.category || "";
+  const search = urlParams.search || "";
 
-  // Derived states
-  const isInitialLoad = query.isLoading;
-  const isTransitioning = query.isFetching && query.isPlaceholderData;
-  const showSkeleton = isInitialLoad || isTransitioning;
+  const query = useProducts({ page, limit: LIMIT, category, search });
+  const { toasts, dismiss } = useToast();
+
+  const { prefetchPage } = usePrefetchPagination({
+    queryKey: "products",
+    params: { page, limit: LIMIT, category, search },
+    totalPages: query.data?.totalPages ?? 0,
+    fetchFn: fetchProductsWithRetry,
+  });
+
+  const isInitialLoad = query.isLoading && !query.data;
+  const isDistantJump = query.isFetching && query.data && Math.abs(page - query.data.page) > 1;
+  const isParamsChange = query.isFetching && query.isPlaceholderData;
+  const showSkeleton = isInitialLoad || isDistantJump || isParamsChange;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-gray-900">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <header className="relative overflow-hidden rounded-[28px] border border-gray-200/80 bg-white/85 p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-500 hover:shadow-[0_24px_80px_rgba(99,102,241,0.10)]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.12),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.08),transparent_25%)]" />
+    <>
+      <ToastContainer toasts={toasts} onDismiss={dismiss} />
 
-          <div className="relative z-10">
-            <span className="mb-3 inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-600">
-              Curated Collection
-            </span>
-
-            <Title>Premium Products</Title>
-
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base">
-              Browse a polished product experience with search, filtering,
-              pagination, and graceful handling of slow and flaky API responses.
-            </p>
-          </div>
-        </header>
-
-        {/* Toolbar — skeleton only on very first load, keep interactive otherwise */}
-        {isInitialLoad ? (
-          <ToolbarSkeleton />
-        ) : (
-          <ProductToolbar
-            search={search}
-            category={category}
-            onSearchChange={(value) => {
-              setPage(1);
-              setSearch(value);
-            }}
-            onCategoryChange={(value) => {
-              setPage(1);
-              setCategory(value);
-            }}
+      <PageWrapper>
+        <Container>
+          <PageHeader
+            badge="Curated Collection"
+            title="Premium Products"
+            subtitle="Browse a polished product experience with search, filtering, pagination, and graceful handling of slow and flaky API responses."
           />
-        )}
 
-        <main className="mt-8 relative">
-          {/* State 1 & Transitions: Show skeletons for grid + pagination */}
-          {showSkeleton && (
-            <>
-              <ProductGridSkeleton count={limit} />
-              <PaginationSkeleton />
-            </>
-          )}
-
-          {/* State 2: All retries failed, no cached data */}
-          {query.isError && !query.data && !query.isLoading && (
-            <ErrorMessage
-              message={query.error?.message || "Failed to load products"}
-              onRetry={() => query.refetch()}
+          {isInitialLoad ? (
+            <ToolbarSkeleton />
+          ) : (
+            <ProductToolbar
+              search={search}
+              category={category}
+              onSearchChange={(value) => setUrlParams({ search: value, page: 1 })}
+              onCategoryChange={(value) => setUrlParams({ category: value, page: 1 })}
             />
           )}
 
-          {/* State 3 & 4: We have data AND not transitioning */}
-          {query.data && !showSkeleton && (
-            <>
-              {/* Background refetch indicator (silent refetch, not page/filter change) */}
-              {query.isFetching && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-500 animate-pulse rounded" />
-              )}
+          <Section as="main" className="mt-8 relative">
+            {showSkeleton && (
+              <>
+                <ProductGridSkeleton count={LIMIT} />
+                <PaginationSkeleton />
+              </>
+            )}
 
-              {/* Background refetch failed — keep showing cached data */}
-              {query.isError && (
-                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-center justify-between">
-                  <span>Failed to refresh. Showing cached data.</span>
-                  <button
-                    onClick={() => query.refetch()}
-                    className="ml-3 underline font-medium hover:text-amber-900"
-                  >
-                    Try again
-                  </button>
-                </div>
-              )}
+            {query.data && !showSkeleton && (
+              <>
+                {query.isFetching && <ProgressBar color="primary" />}
 
-              {query.data.data.length === 0 ? (
-                <EmptyMessage />
-              ) : (
-                <>
-                  <ProductGrid products={query.data.data} />
+                {query.data.data.length === 0 ? (
+                  <EmptyMessage />
+                ) : (
+                  <>
+                    <ProductGrid products={query.data.data} />
 
-                  <Pagination
-                    page={query.data.page}
-                    totalPages={query.data.totalPages}
-                    onPageChange={(page) => setPage(page)}
-                    disabled={query.isFetching}
-                  />
-                </>
-              )}
-            </>
-          )}
-        </main>
-      </div>
-    </div>
+                    <Pagination
+                      page={query.data.page}
+                      totalPages={query.data.totalPages}
+                      onPageChange={(p) => setUrlParams({ page: p })}
+                      onPrefetch={prefetchPage}
+                      disabled={query.isFetching}
+                    />
+                  </>
+                )}
+              </>
+            )}
+          </Section>
+        </Container>
+      </PageWrapper>
+    </>
   );
 };
 

@@ -1,74 +1,49 @@
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-
-type JustifyItems = 'start' | 'center' | 'end' | 'stretch';
-type AlignItems = 'start' | 'center' | 'end' | 'stretch';
+// components/atoms/containers/GridContainer.tsx
+import type { HTMLAttributes, ReactNode } from 'react';
 
 interface GridContainerProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   columns?: string;
   rows?: string;
   gap?: number;
-  width?: number | string;
-  height?: number | string;
-  padding?: number | string;
-  margin?: number | string;
-  bgColor?: string;
-  justifyItems?: JustifyItems;
-  alignItems?: AlignItems;
+  padding?: number;
+  justifyItems?: 'start' | 'center' | 'end' | 'stretch';
+  alignItems?: 'start' | 'center' | 'end' | 'stretch';
   className?: string;
 }
 
-const justifyItemsClasses: Record<JustifyItems, string> = {
+const justifyItemsMap = {
   start: 'justify-items-start',
   center: 'justify-items-center',
   end: 'justify-items-end',
   stretch: 'justify-items-stretch',
-};
+} as const;
 
-const alignItemsClasses: Record<AlignItems, string> = {
+const alignItemsMap = {
   start: 'items-start',
   center: 'items-center',
   end: 'items-end',
   stretch: 'items-stretch',
-};
+} as const;
 
 const GridContainer = ({
   children,
   columns,
   rows,
   gap,
-  width,
-  height,
   padding,
-  margin,
-  bgColor,
   justifyItems = 'stretch',
   alignItems = 'stretch',
   className = '',
   style,
   ...props
 }: GridContainerProps) => {
-  const mergedStyle: CSSProperties = {
-    gridTemplateColumns: columns,
-    gridTemplateRows: rows,
-    gap,
-    width,
-    height,
-    padding,
-    margin,
-    backgroundColor: bgColor,
-    ...style,
-  };
-
-  const classes = [
-    'grid',
-    justifyItemsClasses[justifyItems],
-    alignItemsClasses[alignItems],
-    className,
-  ].join(' ');
-
   return (
-    <div {...props} className={classes} style={mergedStyle}>
+    <div
+      {...props}
+      className={`grid ${justifyItemsMap[justifyItems]} ${alignItemsMap[alignItems]} ${className}`}
+      style={{ gridTemplateColumns: columns, gridTemplateRows: rows, gap, padding, ...style }}
+    >
       {children}
     </div>
   );

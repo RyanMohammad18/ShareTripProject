@@ -1,61 +1,48 @@
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-
-type FlexDirection = 'row' | 'col' | 'row-reverse' | 'col-reverse';
-type FlexWrap = 'wrap' | 'nowrap' | 'wrap-reverse';
-type JustifyContent =
-  | 'start'
-  | 'center'
-  | 'end'
-  | 'between'
-  | 'around'
-  | 'evenly';
-type AlignItems = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
+// components/atoms/containers/FlexContainer.tsx
+import type { HTMLAttributes, ReactNode } from 'react';
 
 interface FlexContainerProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-  direction?: FlexDirection;
-  wrap?: FlexWrap;
-  justify?: JustifyContent;
-  align?: AlignItems;
+  children?: ReactNode;
+  direction?: 'row' | 'col' | 'row-reverse' | 'col-reverse';
+  wrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
+  justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
+  align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
   gap?: number;
-  width?: number | string;
+  padding?: number;
   height?: number | string;
-  padding?: number | string;
-  margin?: number | string;
-  bgColor?: string;
-  flex?: number | string;
+  width?: number | string;
   className?: string;
 }
 
-const directionClasses: Record<FlexDirection, string> = {
+const directionMap = {
   row: 'flex-row',
   col: 'flex-col',
   'row-reverse': 'flex-row-reverse',
   'col-reverse': 'flex-col-reverse',
-};
+} as const;
 
-const wrapClasses: Record<FlexWrap, string> = {
-  wrap: 'flex-wrap',
-  nowrap: 'flex-nowrap',
-  'wrap-reverse': 'flex-wrap-reverse',
-};
-
-const justifyClasses: Record<JustifyContent, string> = {
+const justifyMap = {
   start: 'justify-start',
   center: 'justify-center',
   end: 'justify-end',
   between: 'justify-between',
   around: 'justify-around',
   evenly: 'justify-evenly',
-};
+} as const;
 
-const alignClasses: Record<AlignItems, string> = {
+const alignMap = {
   start: 'items-start',
   center: 'items-center',
   end: 'items-end',
   stretch: 'items-stretch',
   baseline: 'items-baseline',
-};
+} as const;
+
+const wrapMap = {
+  wrap: 'flex-wrap',
+  nowrap: 'flex-nowrap',
+  'wrap-reverse': 'flex-wrap-reverse',
+} as const;
 
 const FlexContainer = ({
   children,
@@ -64,38 +51,19 @@ const FlexContainer = ({
   justify = 'start',
   align = 'start',
   gap,
-  width,
-  height,
   padding,
-  margin,
-  bgColor,
-  flex,
+  height,
+  width,
   className = '',
   style,
   ...props
 }: FlexContainerProps) => {
-  const mergedStyle: CSSProperties = {
-    gap,
-    width,
-    height,
-    padding,
-    margin,
-    backgroundColor: bgColor,
-    flex,
-    ...style,
-  };
-
-  const classes = [
-    'flex',
-    directionClasses[direction],
-    wrapClasses[wrap],
-    justifyClasses[justify],
-    alignClasses[align],
-    className,
-  ].join(' ');
-
   return (
-    <div {...props} className={classes} style={mergedStyle}>
+    <div
+      {...props}
+      className={`flex ${directionMap[direction]} ${wrapMap[wrap]} ${justifyMap[justify]} ${alignMap[align]} ${className}`}
+      style={{ gap, padding, height, width, ...style }}
+    >
       {children}
     </div>
   );

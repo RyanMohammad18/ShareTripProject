@@ -1,16 +1,42 @@
-import type { ReactNode } from 'react';
+// components/atoms/Card/Card.tsx
+import type { HTMLAttributes, ReactNode } from 'react';
 
-interface CardProps {
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  width?: number | string;
+  height?: number | string;
+  radius?: number;
+  gap?: number;
   className?: string;
 }
 
-export const Card = ({ children, className = '' }: CardProps) => {
+const Card = ({
+  children,
+  width,
+  height,
+  radius = 8,
+  gap = 2,
+  className = '',
+  style,
+  ...props
+}: CardProps) => {
   return (
     <div
-      className={`rounded-[28px] border border-gray-200 bg-white/95 shadow-[0_16px_40px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-500 ${className}`}
+      {...props}
+      className={`overflow-hidden ${className}`}
+      style={{
+        width,
+        height,
+        borderRadius: radius,
+        gap,
+        display: 'flex',
+        flexDirection: 'column',
+        ...style,
+      }}
     >
       {children}
     </div>
   );
 };
+
+export default Card;

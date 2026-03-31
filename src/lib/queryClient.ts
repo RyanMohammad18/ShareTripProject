@@ -1,20 +1,37 @@
-
+// lib/queryClient.ts
 import { QueryClient } from '@tanstack/react-query';
+import { setupQueryPersister } from './queryPersister';
+import { toastStore } from './toastStore';
+import { normalizeError } from '../types/errors';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Don't let React Query retry ON TOP of your manual retry
       retry: false,
-
-      // Show cached data for 30s before considering it stale
       staleTime: 30_000,
-
-      // Keep unused cache for 5 min
       gcTime: 5 * 60 * 1000,
-
-      // Don't refetch when window regains focus (flaky API = unnecessary pain)
       refetchOnWindowFocus: false,
     },
   },
 });
+
+// Global error handler — catches ALL query failures, shows toast
+// No useEffect, no component-level error handling needed
+queryClient.getQueryCache().subscribe((event) => {
+  if (event.type !== 'updated' || event.action.type !== 'error') return;
+
+  const error = event.action.error as Error;
+  const appError = normalizeError(error);
+
+  // Abort → null → no toast
+  if (!appError) return;
+
+  toastStore.add({
+    type: 'error',
+    message: appError.message,
+    hint: appError.hint,
+  });
+});
+
+// Persistence
+setupQueryPersister(queryClient, 'products');

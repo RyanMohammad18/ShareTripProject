@@ -1,66 +1,59 @@
 // components/molecules/ProductCard.tsx
-import type { Product } from '../../types/product';
+import Card from "../atoms/Card/Card";
+import CardImage from "../atoms/CardImage/CardImage";
+import FlexContainer from "../atoms/containers/FlexContainer";
+import Text from "../atoms/Typography/Text";
+import type { Product } from "../../types/product";
 
 interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
-  const isLowStock = product.stock > 0 && product.stock <= 5;
-  const isOutOfStock = product.stock === 0;
-
+const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden
-                    hover:shadow-md transition-shadow duration-200">
-      {/* Image */}
-      <div className="relative aspect-[4/3] bg-gray-100">
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          loading="lazy"
-          className="w-full h-full object-cover"
-        />
-        {/* Category badge */}
-        <span className="absolute top-2 left-2 px-2 py-1 bg-white/90 rounded text-xs font-medium text-gray-700">
+    <Card
+      width="100%"
+      radius={8}
+      gap={2}
+      className="bg-white border border-gray-200 hover:shadow-md transition-shadow duration-200"
+    >
+      <CardImage
+        src={product.imageUrl}
+        alt={product.name}
+        height={210}
+        borderRadius="6px 6px 4px 4px"
+      />
+
+      <FlexContainer direction="col" gap={8} padding={8} className="w-full">
+        <Text
+          size={14}
+          weight={400}
+          lineHeight="tight"
+          color="secondary"
+          ParagraphSpacing="md"
+          className="truncate"
+        >
           {product.category}
-        </span>
-      </div>
+        </Text>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-1">
+        <Text
+          size={16}
+          weight={525}
+          lineHeight="normal"
+          color="dark"
+          className="line-clamp-2"
+        >
           {product.name}
-        </h3>
+        </Text>
 
-        <p className="text-gray-500 text-xs mt-1 line-clamp-2">
-          {product.description}
-        </p>
-
-        {/* Price + Stock row */}
-        <div className="flex items-center justify-between mt-3">
-          <span className="text-lg font-bold text-gray-900">
-            ${product.price.toFixed(2)}
-          </span>
-
-          {isOutOfStock && (
-            <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded">
-              Out of stock
-            </span>
-          )}
-
-          {isLowStock && (
-            <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded">
-              Only {product.stock} left
-            </span>
-          )}
-
-          {!isOutOfStock && !isLowStock && (
-            <span className="text-xs text-gray-400">
-              {product.stock} in stock
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
+        <FlexContainer align="center" gap={8} className="mt-auto pt-2">
+          <Text size={18} weight={600} lineHeight="loose" color="sky">
+          ৳ {product.price.toFixed(2)}
+          </Text>
+        </FlexContainer>
+      </FlexContainer>
+    </Card>
   );
-}
+};
+
+export default ProductCard;

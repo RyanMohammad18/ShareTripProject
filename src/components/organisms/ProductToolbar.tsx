@@ -1,10 +1,9 @@
 // components/organisms/ProductToolbar.tsx
-
+import { useState, useRef, useCallback } from "react";
 import { Select } from "../atoms/Select/Select";
 import Label from "../atoms/Typography/Label";
 import FlexContainer from "../atoms/containers/FlexContainer";
 import { SearchInput } from "../molecules/SearchInput";
-
 
 interface ProductToolbarProps {
   search: string;
@@ -19,6 +18,19 @@ const ProductToolbar = ({
   onSearchChange,
   onCategoryChange,
 }: ProductToolbarProps) => {
+  const [searchInput, setSearchInput] = useState(search);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchInput(value);
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    timerRef.current = setTimeout(() => {
+      onSearchChange(value);
+    }, 400);
+  }, [onSearchChange]);
+
   return (
     <FlexContainer
       direction="col"
@@ -27,7 +39,7 @@ const ProductToolbar = ({
     >
       <div className="w-full">
         <Label className="mb-2 inline-block text-gray-500">Search</Label>
-        <SearchInput value={search} onChange={onSearchChange} />
+        <SearchInput value={searchInput} onChange={handleSearchChange} />
       </div>
 
       <div className="w-full lg:w-auto">

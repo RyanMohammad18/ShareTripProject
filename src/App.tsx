@@ -1,5 +1,5 @@
 import { Search, Loader2 } from "lucide-react";
-
+import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import ProductsPage from "./pages/ProductsPage";
@@ -84,10 +84,12 @@ function App() {
     //     </div>
     //   </main>
     // </div>
+    <BrowserRouter>
 
     <QueryClientProvider client={queryClient}>
       <ProductsPage />
     </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 
