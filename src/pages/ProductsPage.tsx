@@ -12,7 +12,7 @@ import {
   ToolbarSkeleton,
   PaginationSkeleton,
   ProductGridSkeleton,
-} from "../components/molecules/ProductCardSkeleton";
+} from "../components/molecules/SkeletonLoading";
 
 import ProductToolbar from "../components/organisms/ProductToolbar";
 import ProductGrid from "../components/organisms/ProductGrid";

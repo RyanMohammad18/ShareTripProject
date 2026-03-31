@@ -1,9 +1,11 @@
-// components/organisms/ProductToolbar.tsx
+
 import { useState, useRef, useCallback } from "react";
 import { Select } from "../atoms/Select/Select";
 import Label from "../atoms/Typography/Label";
 import FlexContainer from "../atoms/containers/FlexContainer";
 import { SearchInput } from "../molecules/SearchInput";
+
+const CATEGORIES = ['All Categories', 'Electronics', 'Clothing', 'Home', 'Outdoors'];
 
 interface ProductToolbarProps {
   search: string;
@@ -23,12 +25,8 @@ const ProductToolbar = ({
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchInput(value);
-
     if (timerRef.current) clearTimeout(timerRef.current);
-
-    timerRef.current = setTimeout(() => {
-      onSearchChange(value);
-    }, 400);
+    timerRef.current = setTimeout(() => onSearchChange(value), 400);
   }, [onSearchChange]);
 
   return (
@@ -37,25 +35,29 @@ const ProductToolbar = ({
       gap={16}
       className="mt-8 lg:flex-row lg:items-end lg:justify-between"
     >
-      <div className="w-full">
-        <Label className="mb-2 inline-block text-gray-500">Search</Label>
+      <FlexContainer direction="col" gap={8} className="w-full">
+        <Label className="text-gray-500">Search</Label>
         <SearchInput value={searchInput} onChange={handleSearchChange} />
-      </div>
+      </FlexContainer>
 
-      <div className="w-full lg:w-auto">
-        <Label className="mb-2 inline-block text-gray-500">Category</Label>
+      <FlexContainer direction="col" gap={8} className="w-full lg:w-auto">
+        <Label className="text-gray-500">Category</Label>
         <Select
           value={category}
           onChange={(e) => onCategoryChange(e.target.value)}
           className="lg:min-w-[220px]"
         >
-          <option value="" className="bg-white text-gray-900">All Categories</option>
-          <option value="Electronics" className="bg-white text-gray-900">Electronics</option>
-          <option value="Clothing" className="bg-white text-gray-900">Clothing</option>
-          <option value="Home" className="bg-white text-gray-900">Home</option>
-          <option value="Outdoors" className="bg-white text-gray-900">Outdoors</option>
+          {CATEGORIES.map((cat) => (
+            <option
+              key={cat}
+              value={cat === 'All Categories' ? '' : cat}
+              className="bg-white text-gray-900"
+            >
+              {cat}
+            </option>
+          ))}
         </Select>
-      </div>
+      </FlexContainer>
     </FlexContainer>
   );
 };
