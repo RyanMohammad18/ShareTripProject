@@ -48,51 +48,122 @@ export function Pagination({
     return pages;
   };
 
+  const pageNumbers = getPageNumbers();
+
   return (
-    <FlexContainer
-      align="center"
-      justify="center"
-      gap={4}
-      className="mt-8 flex-wrap justify-center space-x-2"
-    >
-      <Button
-        variant="secondary"
-        onClick={() => handleClick(page - 1)}
-        onMouseEnter={() => page > 1 && onPrefetch?.(page - 1)}
-        disabled={disabled || page === 1}
-        className="w-6 h-6 p-1 text-xs sm:w-8 sm:h-8 sm:p-2 sm:text-sm"
-      >
-        Previous
-      </Button>
+    <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-2">
+      
+    
+      <div className="flex items-center justify-between w-full px-4 sm:hidden">
+        <Button
+          variant="secondary"
+          onClick={() => handleClick(page - 1)}
+          onMouseEnter={() => page > 1 && onPrefetch?.(page - 1)}
+          disabled={disabled || page === 1}
+          className="h-8 px-3 flex items-center justify-center text-xs whitespace-nowrap"
+        >
+          ← Prev
+        </Button>
 
-      {getPageNumbers().map((pageNum, index) =>
-        pageNum === '...' ? (
-          <Text key={`ellipsis-${index}`} size={14} color="muted" className="px-2">
-            ...
-          </Text>
-        ) : (
-          <Button
-            key={pageNum}
-            variant={pageNum === page ? 'primary' : 'secondary'}
-            onClick={() => handleClick(pageNum)}
-            onMouseEnter={() => pageNum !== page && onPrefetch?.(pageNum)}
-            disabled={disabled || pageNum === page}
-            className="w-6 h-6 p-1 text-xs sm:w-8 sm:h-8 sm:p-2 sm:text-sm"
-          >
-            {pageNum}
-          </Button>
-        )
-      )}
+        <span className="text-xs text-gray-500">
+          {page} / {totalPages}
+        </span>
 
-      <Button
-        variant="secondary"
-        onClick={() => handleClick(page + 1)}
-        onMouseEnter={() => page < totalPages && onPrefetch?.(page + 1)}
-        disabled={disabled || page === totalPages}
-        className="w-6 h-6 p-1 text-xs sm:w-8 sm:h-8 sm:p-2 sm:text-sm"
-      >
-        Next
-      </Button>
-    </FlexContainer>
+        <Button
+          variant="secondary"
+          onClick={() => handleClick(page + 1)}
+          onMouseEnter={() => page < totalPages && onPrefetch?.(page + 1)}
+          disabled={disabled || page === totalPages}
+          className="h-8 px-3 flex items-center justify-center text-xs whitespace-nowrap"
+        >
+          Next →
+        </Button>
+      </div>
+
+ 
+      <div className="flex items-center justify-center gap-1 flex-wrap sm:hidden">
+        {pageNumbers.map((pageNum, index) =>
+          pageNum === '...' ? (
+            <Text
+              key={`ellipsis-${index}`}
+              size={14}
+              color="muted"
+              className="w-8 h-8 flex items-center justify-center"
+            >
+              ...
+            </Text>
+          ) : (
+            <Button
+              key={pageNum}
+              variant={pageNum === page ? 'primary' : 'secondary'}
+              onClick={() => {
+                if (typeof pageNum === 'number') handleClick(pageNum);
+              }}
+              onMouseEnter={() => {
+                if (typeof pageNum === 'number' && pageNum !== page) onPrefetch?.(pageNum);
+              }}
+              disabled={disabled || pageNum === page}
+              className="w-8 h-8 flex items-center justify-center shrink-0 p-0 text-xs"
+            >
+              {pageNum}
+            </Button>
+          )
+        )}
+      </div>
+
+  
+      <div className="hidden sm:flex items-center justify-center gap-2">
+        <Button
+          variant="secondary"
+          onClick={() => handleClick(page - 1)}
+          onMouseEnter={() => page > 1 && onPrefetch?.(page - 1)}
+          disabled={disabled || page === 1}
+          className="h-10 px-3 flex items-center justify-center text-sm whitespace-nowrap"
+        >
+          Previous
+        </Button>
+
+        <div className="flex items-center justify-center gap-2">
+          {pageNumbers.map((pageNum, index) =>
+            pageNum === '...' ? (
+              <Text
+                key={`ellipsis-${index}`}
+                size={14}
+                color="muted"
+                className="w-10 h-10 flex items-center justify-center"
+              >
+                ...
+              </Text>
+            ) : (
+              <Button
+                key={pageNum}
+                variant={pageNum === page ? 'primary' : 'secondary'}
+                onClick={() => {
+                  if (typeof pageNum === 'number') handleClick(pageNum);
+                }}
+                onMouseEnter={() => {
+                  if (typeof pageNum === 'number' && pageNum !== page) onPrefetch?.(pageNum);
+                }}
+                disabled={disabled || pageNum === page}
+                className="w-10 h-10 flex items-center justify-center shrink-0 p-0 text-sm"
+              >
+                {pageNum}
+              </Button>
+            )
+          )}
+        </div>
+
+        <Button
+          variant="secondary"
+          onClick={() => handleClick(page + 1)}
+          onMouseEnter={() => page < totalPages && onPrefetch?.(page + 1)}
+          disabled={disabled || page === totalPages}
+          className="h-10 px-3 flex items-center justify-center text-sm whitespace-nowrap"
+        >
+          Next
+        </Button>
+      </div>
+
+    </div>
   );
 }
