@@ -13,15 +13,15 @@ I structured the codebase using Atomic Design (atoms → molecules → organisms
 
 **Flaky API Request:**  
 
-- **Implemented a resilient client pattern** with exponential backoff retry (3 retries: 800ms → 1600ms → 3200ms) to reduce the failure rate  
-- **Used AbortController signal passing** to cancel stale requests on subsequent API calls
+- Implemented a resilient client pattern with **exponential backoff** retry (3 retries: 800ms → 1600ms → 3200ms) to reduce the failure rate  
+- Used **AbortController signal passing** to cancel stale requests on subsequent API calls
 
 **Loading State:**  
 
-- **Used two loading patterns:** Skeleton loading and a progress bar. Skeletons are used only when there's genuinely nothing to display (first load, distant page jump, filter/search change). Progress bar loading is used for pagination so that existing data remains visible instead of showing continuous skeleton loading  
-- **Implemented prefetching on click** (next page from destination), so adjacent navigation is instant from cache  
+- **Used two loading patterns:** **Skeleton loading** and a progress bar. Skeletons are used only when there's genuinely nothing to display (first load, distant page jump, filter/search change). **Progress bar** loading is used for pagination so that existing data remains visible instead of showing continuous skeleton loading  
+- Implemented **prefetching on click** (next page from destination), so adjacent navigation is instant from cache  
 - **Cached previously visited pages** in both localStorage and state, so navigating back does not trigger loading again  
-- **In the search functionality, used debounced search** so loading does not trigger on every keystroke, but only after the user stops typing. At that point, skeleton loading is shown
+- In the search functionality, used **debounced search** so loading does not trigger on every keystroke, but only after the user stops typing. At that point, skeleton loading is shown
 
 **Error Handling:**  
 
@@ -40,7 +40,7 @@ I structured the codebase using Atomic Design (atoms → molecules → organisms
 - **More user-friendly UI along with improved progress loading:** The UI follows the provided Figma, but improvements could be made (e.g., moving the progress bar to the top of the screen)  
 - **Test coverage:** Unit testing was not included due to time constraints
 
-**If I had more time, priority order:**  
+**If I had more time,my priority order would be:**  
 
 - **Image fallback:** Using onError to replace with placeholder image or SVG  
 - **Offline detection:** It can be solved with navigator online listening  
