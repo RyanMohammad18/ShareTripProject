@@ -1,4 +1,3 @@
-import FlexContainer from '../atoms/containers/FlexContainer';
 import Button from '../atoms/Button/Button';
 import Text from '../atoms/Typography/Text';
 
