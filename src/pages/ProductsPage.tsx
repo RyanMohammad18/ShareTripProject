@@ -22,6 +22,7 @@ import Container from "../components/atoms/containers/Container";
 import PageHeader from "../components/molecules/PageHeader";
 import Section from "../components/atoms/section/Section";
 import ProgressBar from "../components/atoms/Progressbar/ProgressBar";
+import { useRef } from "react";
 
 const LIMIT = 12;
 
@@ -46,10 +47,17 @@ const ProductsPage = () => {
     fetchFn: fetchProductsWithRetry,
   });
 
+  const lastFiltersRef = useRef({ category, search });
+
   const isInitialLoad = query.isLoading && !query.data;
-  const isDistantJump = query.isFetching && query.data && Math.abs(page - query.data.page) > 1;
-  const isParamsChange = query.isFetching && query.isPlaceholderData;
-  const showSkeleton = isInitialLoad || isDistantJump || isParamsChange;
+  const isFilterChange = query.isFetching && (
+    category !== lastFiltersRef.current.category || search !== lastFiltersRef.current.search
+  );
+  const showSkeleton = isInitialLoad || isFilterChange;
+  
+  if (!query.isFetching) {
+    lastFiltersRef.current = { category, search };
+  }
 
   return (
     <>
@@ -84,7 +92,7 @@ const ProductsPage = () => {
 
             {query.data && !showSkeleton && (
               <>
-                {query.isFetching && <ProgressBar color="primary" />}
+                {query.isPlaceholderData && <ProgressBar color="primary" />}
 
                 {query.data.data.length === 0 ? (
                   <EmptyMessage />

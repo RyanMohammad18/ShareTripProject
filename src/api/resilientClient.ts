@@ -22,7 +22,12 @@ export async function fetchProductsWithRetry(
 
     try {
       const result = await api.fetchProducts(params);
-      return result;
+
+      if (!result?.data) throw new Error('Empty response from server');
+      if (!Array.isArray(result.data)) throw new Error('Invalid response format');
+      result.data = result.data.filter(Boolean) as Product[];
+    
+      return result; 
     } catch (error) {
       lastError = error as Error;
 

@@ -14,10 +14,13 @@ const PageHeader = ({ badge, title, subtitle }: PageHeaderProps) => {
   return (
     <Section
       as="header"
-      className="relative overflow-hidden rounded-[28px] border border-gray-200/80 bg-white/85 p-8 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-500 hover:shadow-[0_24px_80px_rgba(99,102,241,0.10)]"
+      className="glass-panel relative overflow-hidden p-8 transition-all duration-500 hover:shadow-[0_24px_80px_rgba(37,99,235,0.10)]"
     >
       <FlexContainer
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.12),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.08),transparent_25%)]"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 30%), radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.08), transparent 25%)`,
+        }}
       />
 
       <FlexContainer direction="col" className="relative z-10">

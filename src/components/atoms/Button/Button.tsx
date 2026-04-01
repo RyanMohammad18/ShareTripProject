@@ -1,5 +1,5 @@
-
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { colors } from '../../../constants/colors';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link';
 
@@ -9,23 +9,39 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl px-4 py-2',
-  secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl px-4 py-2',
-  ghost: 'bg-transparent text-gray-600 hover:text-gray-900',
-  link: 'underline font-medium hover:text-amber-900',
+const variantStyles: Record<ButtonVariant, { className: string; style: React.CSSProperties }> = {
+  primary: {
+    className: 'rounded-xl px-4 py-2',
+    style: { backgroundColor: colors.sky, color: colors.black },
+  },
+  secondary: {
+    className: 'rounded-xl px-4 py-2',
+    style: { backgroundColor: colors.white, color: colors.dark },
+  },
+  ghost: {
+    className: '',
+    style: { backgroundColor: 'transparent', color: colors.secondary },
+  },
+  link: {
+    className: 'underline font-medium',
+    style: { color: colors.primary },
+  },
 };
 
 const Button = ({
   children,
   variant = 'primary',
   className = '',
+  style,
   ...props
 }: ButtonProps) => {
+  const v = variantStyles[variant];
+
   return (
     <button
       {...props}
-      className={`text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${variantClasses[variant]} ${className}`}
+      className={`text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${v.className} ${className}`}
+      style={{ ...v.style, ...style }}
     >
       {children}
     </button>
